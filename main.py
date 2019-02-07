@@ -1,6 +1,7 @@
 from urldownload import retrieve
+from parse import parse
 def main():
-    retrieve()
-
+    #retrieve()
+    parse()
 
 main()
