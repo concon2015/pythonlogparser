@@ -3,7 +3,6 @@ import os
 def parse():
     ##Delcarations##
     totalRequests = 0
-    daysInMonths = [31,28,31,30,31,30,31,31,30,31,30,31]
     status400count = 0
     status300count= 0
     malformedEntrys = 0
@@ -33,10 +32,18 @@ def parse():
             else:
                 codefreq[b] = 1
             ##find the frequency of accessed files
-            if(a[4:-9] in accessedFiles):
-                accessedFiles[a[4:-9]] += 1
-            else:
-                accessedFiles[a[4:-9]] = 1
+
+
+            if a[0:3] == "GET":
+                if(a[4:-9] in accessedFiles):
+                    accessedFiles[a[4:-9]] += 1
+                else:
+                    accessedFiles[a[4:-9]] = 1
+            elif a [0:3] == "HEA":
+                if(a[4:-9] in accessedFiles):
+                    accessedFiles[a[4:-9]] += 1
+                else:
+                    accessedFiles[a[5:-9]] = 1
         else:
             malformedEntrys+=1
 
@@ -70,12 +77,22 @@ def parse():
                 monthlyUsageResults.append(1)
     for i in monthlyUsageCounter:
         j=monthlyUsageCounter.index(i)
-        nreport.write(monthlyUsageCounter[j] + '  -  ' + str(monthlyUsageResults[j]) + "\n")
+        nreport.write(monthlyUsageCounter[j] + '  -  ' + str(monthlyUsageResults[j]) + " requests\n")
     nreport.write("===========================================\n")
     nreport.write("                Statistics                 \n")
-    nreport.write("Total Request Count  -  " + totalRequests + '\n')
-    nreport.write("3XX Status Codes  -  " +status300count +'\n')
-    nreport.write("4XX Status Codes  -  " +status400count +'\n')
-    nreport.write("Malformed Log Entries  -  " + malformedEntrys + '\n')
+    nreport.write("Total Request Count  -  " + str(totalRequests) + '\n')
+    nreport.write("3XX Status Codes  -  " +str(status300count) +' ('+ str(round(status300count/totalRequests*100,2)) +'%)\n')
+    nreport.write("4XX Status Codes  -  " +str(status400count) +' ('+ str(round(status400count/totalRequests*100,2)) +'%)\n')
+    nreport.write("Malformed Log Entries  -  " +str(malformedEntrys) +' ('+ str(round(malformedEntrys/totalRequests*100,2)) +'%)\n')
+    nreport.write("Most Requested File  -  " +str(max(accessedFiles, key=accessedFiles.get) +' ('+ str(accessedFiles.get(max(accessedFiles, key=accessedFiles.get), "none")) +' requests)\n'))
+    nreport.write("Least Requested File  -  " +str(min(accessedFiles, key=accessedFiles.get) +' ('+ str(accessedFiles.get(min(accessedFiles, key=accessedFiles.get), "none")) +' request)\n'))
+    # nreport.write("Status Codes:\n")
+    # for key in sorted(codefreq):
+    #     nreport.write("  HTTP Status Code "+str(key)+ ' occurred '+ str(codefreq[key])+" times\n")
+    # nreport.write("===========================================\n")
+    # nreport.write("File Access Statistics:\n")
+    # for key in sorted(accessedFiles):
+    #     nreport.write("  "+str(key)+ ' was accessed '+ str(accessedFiles[key])+" times\n")
+
     return
 ##Line to find the date `print(i[i.find('[')+1:i.find(']')])`
