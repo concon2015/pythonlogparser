@@ -12,10 +12,15 @@ def parse():
     codefreq= {}
     monthlyUsageCounter = []
     monthlyUsageResults = []
+    accessedDailyCount = {}
     prevmonth=""
     nmonth=""
-    #Regex function
-    ##begin parsing
+    ##Create reports directory
+    path = os.getcwd()+"/reports/monthlyLogs"
+    try:
+        os.makedirs(path)
+    except OSError:
+        print ("Directory %s currently exists" % path)
     file = open("log","r")
     file_data =file.readlines()
     totalRequests = len(file_data)
@@ -37,35 +42,32 @@ def parse():
                     accessedFiles[z.group(3).split(' ')[0]]+=1
                 else:
                     accessedFiles[z.group(3).split(' ')[0]]=1
+                #create monthly log files
+                try:
+                    prevmonth = (z.group(2)[3:6])+"_"+(z.group(2)[7:11])
+                    m = path+"/"+prevmonth
+                except (IsADirectoryError, AttributeError):
+                    m = path+"/"+prevmonth
+                #limit the number of times that the system needs to open file
+                if prevmonth==nmonth:
+                    mreport.write(i)
+                elif nmonth=="":
+                    mreport = open(m, 'a+')
+                    mreport.write(i)
+                    nmonth=prevmonth
+                else:
+                    mreport.close()
+                    mreport = open(m, 'a+')
+                    mreport.write(i)
+                    nmonth=prevmonth
+                #daily access counters
+                if z.group(2)[0:11] in accessedDailyCount:
+                    accessedDailyCount[z.group(2)[0:11]]+=1
+                else:
+                    accessedDailyCount[z.group(2)[0:11]]=1
+
             except AttributeError:
                 malformedEntrys+=1
-    ##Create reports directory
-    path = os.getcwd()+"/reports/monthlyLogs"
-    try:
-        os.makedirs(path)
-    except OSError:
-        print ("Directory %s currently exists" % path)
-    #Create monthly file
-    for i in file_data:
-        z = re.match('(\w+).*\[(.*?)\] \"\S+ (.*?)\" (\d+) (\w+|-)',i)
-        try:
-            prevmonth = (z.group(2)[3:6])+"_"+(z.group(2)[7:11])
-            m = path+"/"+prevmonth
-        except (IsADirectoryError, AttributeError):
-            m = path+"/"+prevmonth
-        #limit the number of times that the system needs to open file
-        if prevmonth==nmonth:
-            mreport.write(i)
-        elif nmonth=="":
-            mreport = open(m, 'a+')
-            mreport.write(i)
-            nmonth=prevmonth
-        else:
-            mreport.close()
-            mreport = open(m, 'a+')
-            mreport.write(i)
-            nmonth=prevmonth
-
     #create reports
     n = path+"/overallUsageReport"
     nreport = open(n, 'w+')
@@ -86,10 +88,13 @@ def parse():
     for i in sorted_codefreq:
         nreport.write("  HTTP Status Code "+str(i[0])+ ' occurred '+ str(i[1])+" times\n")
     nreport.write("===========================================\n")
+    nreport.write("Page Requests by Date:\n")
+    for i in accessedDailyCount:
+        nreport.write("  "+str(i) + ' had '+ str(accessedDailyCount[i])+" page requests\n")
+    nreport.write("===========================================\n")
     nreport.write("File Access Statistics:\n")
     sorted_accessedFiles=sorted(accessedFiles.items(), key=operator.itemgetter(1),reverse=True)
     for i in sorted_accessedFiles:
         nreport.write("  "+str(i[0])+ ' was accessed '+ str(i[1])+" times\n")
 
     return
-##Line to find the date `print(i[i.find('[')+1:i.find(']')])`
