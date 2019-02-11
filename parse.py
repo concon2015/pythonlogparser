@@ -18,12 +18,8 @@ def parse():
     totalRequests = len(file_data)
     for i in file_data:
         if len(i) > 60:
-            re = '(\w+) - - \[(.*?)\] \"(.*?)\" (\d+) (\w+|-)'
-            print(re.match(regex, i).groups())
-            ##selects all data between the first and second quotation marks
-            a = i[i.find('"')+1:i.find('"',(i.find('"')+1))]
-            ##selects the status code
-            b = i[i.find('HTTP/1.0"')+10:i.find('HTTP/1.0"')+13]
+            z = re.match('(\w+) - - \[(.*?)\] \"(.*?)\" (\d+) (\w+|-)',i)
+            print(z)
             ##add to 300, 400 counters
             if b[0]=='3':
                 status300count+=1
