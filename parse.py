@@ -1,6 +1,7 @@
 #local - - [25/Oct/1994:00:04:38 -0600] "GET index.html HTTP/1.0" 200 3185
 import os
 import re
+import operator
 def parse():
     ##Delcarations##
     totalRequests = 0
@@ -59,36 +60,36 @@ def parse():
             mreport = open(m, 'a+')
             mreport.write(i)
             nmonth=prevmonth
-            print(i+'2')
         else:
             mreport.close()
             mreport = open(m, 'a+')
             mreport.write(i)
             nmonth=prevmonth
-            print(i+"3")
 
+    #create reports
+    n = path+"/overallUsageReport"
+    nreport = open(n, 'w+')
+    nreport.write("This is report of detailed usage statistics\n")
+    nreport.write("===========================================\n")
+    nreport.write("        Monthly Usage Statistics           \n")
 
-    ##create reports
-    # n = path+"/overallUsageReport"
-    # nreport = open(n, 'w+')
-    # nreport.write("This is report of detailed usage statistics\n")
-    # nreport.write("===========================================\n")
-    # nreport.write("        Monthly Usage Statistics           \n")
-    #
-    # nreport.write("                Statistics                 \n")
-    # nreport.write("Total Request Count  -  " + str(totalRequests) + '\n')
-    # nreport.write("3XX Status Codes  -  " +str(status300count) +' ('+ str(round(status300count/totalRequests*100,2)) +'%)\n')
-    # nreport.write("4XX Status Codes  -  " +str(status400count) +' ('+ str(round(status400count/totalRequests*100,2)) +'%)\n')
-    # nreport.write("Malformed Log Entries  -  " +str(malformedEntrys) +' ('+ str(round(malformedEntrys/totalRequests*100,2)) +'%)\n')
-    # nreport.write("Most Requested File  -  " +str(max(accessedFiles, key=accessedFiles.get) +' ('+ str(accessedFiles.get(max(accessedFiles, key=accessedFiles.get), "none")) +' requests)\n'))
-    # nreport.write("Least Requested File  -  " +str(min(accessedFiles, key=accessedFiles.get) +' ('+ str(accessedFiles.get(min(accessedFiles, key=accessedFiles.get), "none")) +' request)\n'))
-    # # nreport.write("Status Codes:\n")
-    # for key in sorted(codefreq):
-    #     nreport.write("  HTTP Status Code "+str(key)+ ' occurred '+ str(codefreq[key])+" times\n")
-    # nreport.write("===========================================\n")
-    # nreport.write("File Access Statistics:\n")
-    # for key in sorted(accessedFiles):
-    #     nreport.write("  "+str(key)+ ' was accessed '+ str(accessedFiles[key])+" times\n")
+    nreport.write("                Statistics                 \n")
+    nreport.write("Total Request Count  -  " + str(totalRequests) + '\n')
+    nreport.write("3XX Status Codes  -  " +str(status300count) +' ('+ str(round(status300count/totalRequests*100,2)) +'%)\n')
+    nreport.write("4XX Status Codes  -  " +str(status400count) +' ('+ str(round(status400count/totalRequests*100,2)) +'%)\n')
+    nreport.write("Malformed Log Entries  -  " +str(malformedEntrys) +' ('+ str(round(malformedEntrys/totalRequests*100,2)) +'%)\n')
+    nreport.write("Most Requested File  -  " +str(max(accessedFiles, key=accessedFiles.get) +' ('+ str(accessedFiles.get(max(accessedFiles, key=accessedFiles.get), "none")) +' requests)\n'))
+    nreport.write("Least Requested File  -  " +str(min(accessedFiles, key=accessedFiles.get) +' ('+ str(accessedFiles.get(min(accessedFiles, key=accessedFiles.get), "none")) +' request)\n'))
+    nreport.write("===========================================\n")
+    nreport.write("Status Codes:\n")
+    sorted_codefreq=sorted(codefreq.items(), key=operator.itemgetter(1),reverse=True)
+    for i in sorted_codefreq:
+        nreport.write("  HTTP Status Code "+str(i[0])+ ' occurred '+ str(i[1])+" times\n")
+    nreport.write("===========================================\n")
+    nreport.write("File Access Statistics:\n")
+    sorted_accessedFiles=sorted(accessedFiles.items(), key=operator.itemgetter(1),reverse=True)
+    for i in sorted_accessedFiles:
+        nreport.write("  "+str(i[0])+ ' was accessed '+ str(i[1])+" times\n")
 
     return
 ##Line to find the date `print(i[i.find('[')+1:i.find(']')])`
