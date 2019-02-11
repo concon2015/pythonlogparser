@@ -12,9 +12,10 @@ def parse():
     monthlyUsageCounter = []
     monthlyUsageResults = []
     prevmonth=""
+    nmonth=""
     #Regex function
     ##begin parsing
-    file = open("log1","r")
+    file = open("log","r")
     file_data =file.readlines()
     totalRequests = len(file_data)
     for i in file_data:
@@ -45,18 +46,28 @@ def parse():
         print ("Directory %s currently exists" % path)
     #Create monthly file
     for i in file_data:
-            z = re.match('(\w+).*\[(.*?)\] \"\S+ (.*?)\" (\d+) (\w+|-)',i)
-            try:
-                m = path+"/"+(z.group(2)[3:6])+"_"+(z.group(2)[7:11])
-                prevmonth=(z.group(2)[3:6])+"_"+(z.group(2)[7:11])
-                mreport = open(m, 'a+')
-                mreport.write(i)
-                mreport.close()
-            except AttributeError:
-                m = path+"/"+(prevmonth)
-                mreport = open(m, 'a+')
-                mreport.write(i)
-                mreport.close()
+        z = re.match('(\w+).*\[(.*?)\] \"\S+ (.*?)\" (\d+) (\w+|-)',i)
+        try:
+            prevmonth = (z.group(2)[3:6])+"_"+(z.group(2)[7:11])
+            m = path+"/"+prevmonth
+        except (IsADirectoryError, AttributeError):
+            m = path+"/"+prevmonth
+        #limit the number of times that the system needs to open file
+        if prevmonth==nmonth:
+            mreport.write(i)
+        elif nmonth=="":
+            mreport = open(m, 'a+')
+            mreport.write(i)
+            nmonth=prevmonth
+            print(i+'2')
+        else:
+            mreport.close()
+            mreport = open(m, 'a+')
+            mreport.write(i)
+            nmonth=prevmonth
+            print(i+"3")
+
+
     ##create reports
     # n = path+"/overallUsageReport"
     # nreport = open(n, 'w+')
