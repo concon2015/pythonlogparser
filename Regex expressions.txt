@@ -1,0 +1,3 @@
+r"\d+/\w+/\d+ #This pulls the date
+r"\w+\.[a-z]+ #this pulls the file name
+r"\s[0-9]{3}\s #this pulls the status code
