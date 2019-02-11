@@ -1,7 +1,7 @@
 from urldownload import retrieve
-from parse import parse
+from parse import *
+
 def main():
     #retrieve()
     parse()
-
 main()

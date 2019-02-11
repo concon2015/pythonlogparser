@@ -1,0 +1,6 @@
+(\w+).*\[(.*?)\] \"\S+ (.*?)\" (\d+) (\w+|-)
+group 1 Local/remote
+group 2 time
+group 3 request and file
+group 4 status code
+group 5 byte size
