@@ -1,5 +1,6 @@
 #local - - [25/Oct/1994:00:04:38 -0600] "GET index.html HTTP/1.0" 200 3185
 import os
+import re
 def parse():
     ##Delcarations##
     totalRequests = 0
@@ -17,6 +18,8 @@ def parse():
     totalRequests = len(file_data)
     for i in file_data:
         if len(i) > 60:
+            re = '(\w+) - - \[(.*?)\] \"(.*?)\" (\d+) (\w+|-)'
+            print(re.match(regex, i).groups())
             ##selects all data between the first and second quotation marks
             a = i[i.find('"')+1:i.find('"',(i.find('"')+1))]
             ##selects the status code

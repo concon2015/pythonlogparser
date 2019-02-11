@@ -1,3 +1,6 @@
-r"\d+/\w+/\d+ #This pulls the date
-r"\w+\.[a-z]+ #this pulls the file name
-r"\s[0-9]{3}\s #this pulls the status code
+(\w+) - - \[(.*?)\] \"(.*?)\" (\d+) (\w+|-)
+group 1 Local/remote
+group 2 time
+group 3 request and file
+group 4 status code
+group 5 byte size
