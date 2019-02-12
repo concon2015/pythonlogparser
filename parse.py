@@ -13,6 +13,7 @@ def parse():
     monthlyUsageCounter = []
     monthlyUsageResults = []
     accessedDailyCount = {}
+    accessedMonthlyCount = {}
     prevmonth=""
     nmonth=""
     ##Create reports directory
@@ -65,7 +66,11 @@ def parse():
                     accessedDailyCount[z.group(2)[0:11]]+=1
                 else:
                     accessedDailyCount[z.group(2)[0:11]]=1
-
+                #monthly access counters
+                if z.group(2)[3:11] in accessedMonthlyCount:
+                    accessedMonthlyCount[z.group(2)[3:11]]+=1
+                else:
+                    accessedMonthlyCount[z.group(2)[3:11]]=1
             except AttributeError:
                 malformedEntrys+=1
     #create reports
@@ -88,7 +93,11 @@ def parse():
     for i in sorted_codefreq:
         nreport.write("  HTTP Status Code "+str(i[0])+ ' occurred '+ str(i[1])+" times\n")
     nreport.write("===========================================\n")
-    nreport.write("Page Requests by Date:\n")
+    nreport.write("Page Requests by Month:\n")
+    for i in accessedMonthlyCount:
+        nreport.write("  "+str(i) + ' had '+ str(accessedMonthlyCount[i])+" page requests\n")
+    nreport.write("===========================================\n")
+    nreport.write("Page Requests by Day:\n")
     for i in accessedDailyCount:
         nreport.write("  "+str(i) + ' had '+ str(accessedDailyCount[i])+" page requests\n")
     nreport.write("===========================================\n")
