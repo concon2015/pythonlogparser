@@ -11,7 +11,6 @@ def parse():
     accessedFiles = {}
     codefreq= {}
     monthlyUsageCounter = []
-    monthlyUsageResults = []
     accessedDailyCount = {}
     accessedMonthlyCount = {}
     prevmonth=""
@@ -53,12 +52,12 @@ def parse():
                 if prevmonth==nmonth:
                     mreport.write(i)
                 elif nmonth=="":
-                    mreport = open(m, 'a+')
+                    mreport = open(m, 'w')
                     mreport.write(i)
                     nmonth=prevmonth
                 else:
                     mreport.close()
-                    mreport = open(m, 'a+')
+                    mreport = open(m, 'w')
                     mreport.write(i)
                     nmonth=prevmonth
                 #daily access counters
@@ -71,16 +70,16 @@ def parse():
                     accessedMonthlyCount[z.group(2)[3:11]]+=1
                 else:
                     accessedMonthlyCount[z.group(2)[3:11]]=1
+                #weekly conunter
+
             except AttributeError:
                 malformedEntrys+=1
     #create reports
-    n = path+"/overallUsageReport"
-    nreport = open(n, 'w+')
+    n = os.getcwd()+"/reports"+"/overallUsageReport"
+    nreport = open(n, 'w')
     nreport.write("This is report of detailed usage statistics\n")
     nreport.write("===========================================\n")
     nreport.write("        Monthly Usage Statistics           \n")
-
-    nreport.write("                Statistics                 \n")
     nreport.write("Total Request Count  -  " + str(totalRequests) + '\n')
     nreport.write("3XX Status Codes  -  " +str(status300count) +' ('+ str(round(status300count/totalRequests*100,2)) +'%)\n')
     nreport.write("4XX Status Codes  -  " +str(status400count) +' ('+ str(round(status400count/totalRequests*100,2)) +'%)\n')
@@ -105,5 +104,5 @@ def parse():
     sorted_accessedFiles=sorted(accessedFiles.items(), key=operator.itemgetter(1),reverse=True)
     for i in sorted_accessedFiles:
         nreport.write("  "+str(i[0])+ ' was accessed '+ str(i[1])+" times\n")
-
+    nreport.close()
     return

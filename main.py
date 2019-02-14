@@ -8,5 +8,5 @@ def main():
     #retrieve()
     parse()
     end = time.time()
-    print(str(round(end - start,2)) +"seconds for execution")
+    print(str(round(end - start,2)) +" seconds for execution")
 main()
