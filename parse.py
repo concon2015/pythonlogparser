@@ -2,6 +2,7 @@
 import os
 import re
 import operator
+import datetime
 def parse():
     ##Delcarations##
     totalRequests = 0
@@ -12,9 +13,13 @@ def parse():
     codefreq= {}
     monthlyUsageCounter = []
     accessedDailyCount = {}
+    accessedWeeklyCount = {}
     accessedMonthlyCount = {}
+    months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     prevmonth=""
     nmonth=""
+    currentWeek="23/Oct/1994"
+    currentWeekCounter=0
     ##Create reports directory
     path = os.getcwd()+"/reports/monthlyLogs"
     try:
@@ -70,10 +75,26 @@ def parse():
                     accessedMonthlyCount[z.group(2)[3:11]]+=1
                 else:
                     accessedMonthlyCount[z.group(2)[3:11]]=1
-                #weekly conunter
-
+                #weekly counter
+                y = int(z.group(2)[7:11])
+                d = int(z.group(2)[0:2])
+                m = int(months.index(z.group(2)[3:6]))+1
+                date = datetime.date(y,m,d)
+                weekdaystatus = date.weekday()
+                if(weekdaystatus==6 and currentWeekCounter==5):
+                    currentWeek=z.group(2)[:11]
+                    accessedWeeklyCount[currentWeek]=1
+                    currentWeekCounter=weekdaystatus
+                else:
+                    try:
+                        accessedWeeklyCount[currentWeek]+=1
+                        currentWeekCounter=weekdaystatus
+                    except KeyError:
+                        accessedWeeklyCount[currentWeek]=1
+                        currentWeekCounter=weekdaystatus
             except AttributeError:
                 malformedEntrys+=1
+    print(accessedWeeklyCount)
     #create reports
     n = os.getcwd()+"/reports"+"/overallUsageReport"
     nreport = open(n, 'w')
@@ -95,6 +116,10 @@ def parse():
     nreport.write("Page Requests by Month:\n")
     for i in accessedMonthlyCount:
         nreport.write("  "+str(i) + ' had '+ str(accessedMonthlyCount[i])+" page requests\n")
+    nreport.write("===========================================\n")
+    nreport.write("Page Requests by Week:\n")
+    for i in accessedWeeklyCount:
+        nreport.write("  The week of "+str(i) + ' had '+ str(accessedWeeklyCount[i])+" page requests\n")
     nreport.write("===========================================\n")
     nreport.write("Page Requests by Day:\n")
     for i in accessedDailyCount:
