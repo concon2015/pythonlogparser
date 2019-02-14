@@ -15,6 +15,7 @@ def parse():
     accessedDailyCount = {}
     accessedWeeklyCount = {}
     accessedMonthlyCount = {}
+    sorted_dailycount={}
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     prevmonth=""
     nmonth=""
@@ -25,7 +26,7 @@ def parse():
     try:
         os.makedirs(path)
     except OSError:
-        print ("Directory %s currently exists" % path)
+        z="";
     file = open("log","r")
     file_data =file.readlines()
     totalRequests = len(file_data)
@@ -116,17 +117,27 @@ def parse():
     for i in accessedMonthlyCount:
         nreport.write("  "+str(i) + ' had '+ str(accessedMonthlyCount[i])+" page requests\n")
     nreport.write("===========================================\n")
-    nreport.write("Page Requests by Week:\n")
-    for i in accessedWeeklyCount:
-        nreport.write("  The week of "+str(i) + ' had '+ str(accessedWeeklyCount[i])+" page requests\n")
+    nreport.write("Top 10 page requests by week:\n")
+    sorted_weeklycount=sorted(accessedWeeklyCount.items(), key=operator.itemgetter(1),reverse=True)
+    for i in sorted_weeklycount[:10]:
+        nreport.write("  The week of "+str(i[0]) + ' had '+ str(i[1])+" page requests\n")
     nreport.write("===========================================\n")
-    nreport.write("Page Requests by Day:\n")
-    for i in accessedDailyCount:
-        nreport.write("  "+str(i) + ' had '+ str(accessedDailyCount[i])+" page requests\n")
+    nreport.write("Top 10 page request by day:\n")
+    sorted_dailycount=sorted(accessedDailyCount.items(), key=operator.itemgetter(1),reverse=True)
+    for i in sorted_dailycount[:10]:
+        nreport.write("  "+str(i[0])+ ' had '+ str(i[1])+" page requests\n")
     nreport.write("===========================================\n")
-    nreport.write("File Access Statistics:\n")
+    nreport.write("Top 10 most accessed files:\n")
     sorted_accessedFiles=sorted(accessedFiles.items(), key=operator.itemgetter(1),reverse=True)
-    for i in sorted_accessedFiles:
+    for i in sorted_accessedFiles[:10]:
         nreport.write("  "+str(i[0])+ ' was accessed '+ str(i[1])+" times\n")
     nreport.close()
+    nreport = open(n, 'r')
+    reportData =nreport.readlines()
+    print()
+    for i in reportData:
+        print(i.strip("\n"))
+    print()
+    print("Statistics output available at %s\n" %n)
+    print()
     return
