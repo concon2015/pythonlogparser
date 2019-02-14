@@ -94,7 +94,6 @@ def parse():
                         currentWeekCounter=weekdaystatus
             except AttributeError:
                 malformedEntrys+=1
-    print(accessedWeeklyCount)
     #create reports
     n = os.getcwd()+"/reports"+"/overallUsageReport"
     nreport = open(n, 'w')
