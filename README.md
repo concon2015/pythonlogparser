@@ -1,6 +1,6 @@
 # Python Log Parser - TCMG 476
 
-This is a python log parser built for TCMG 476. It will download an Apache log file and parse it.
+This is a python log parser built for TCMG 476. It will download an Apache log file and parse it. This project was coded in Python3 and only uses standard python libraries.
 
 # What will the code do?
 
@@ -10,7 +10,8 @@ This is a python log parser built for TCMG 476. It will download an Apache log f
  - The top busiest days for web traffic
  - The most and least requested files
  - Split the code into individual monthly log files
- - Access count for daily, weekly and monthly sections of time.
+ - Access count for daily, weekly and monthly sections of time
+ - Count the numebr of malformed lines and present a percentage
 
 
 # Instructions for Use
@@ -26,3 +27,5 @@ $ python main.py
     - The program started off very inefficient due to looping though the file multiple times as well as repeatedly opening and closing the results files. By minimizing the number of loops through the program as well as the opening and closing the result files.
 - Providing the proper amount of data
     - The original report was 12,000+ lines long. This included every file access count, daily count, weekly count, etc. This proved to be too much data and the report was trimmed down to about 100 lines of the most relvant data. The program collects all the relevant data but only add the most relevant to the final report. The program can easily be modified to include the most robust log outputs. 
+- Parse the maximum number of lines
+    - There is a lot of malforemd lines and the goal was the parse the most lines possible. A robust regex function had to be built in a way that it could parse the maximum number of lines.
